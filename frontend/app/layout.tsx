@@ -75,7 +75,7 @@ export default function RootLayout({
                   <h3 className="text-lg font-semibold text-white mb-4">Company</h3>
                   <ul className="space-y-2 text-white/70">
                     <li><Link href="/#about" className="hover:text-white transition-colors">About Us</Link></li>
-                    <li><Link href="#" className="hover:text-white transition-colors">Our Team</Link></li>
+                    <li><Link href="/#team" className="hover:text-white transition-colors">Our Team</Link></li>
                     <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
                     <li><Link href="/#contact" className="hover:text-white transition-colors">Contact</Link></li>
                   </ul>
