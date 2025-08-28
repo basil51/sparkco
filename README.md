@@ -105,18 +105,18 @@ pnpm build
 ## 🌐 Access Points
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3001
+- **Backend API**: http://localhost:4000
 
 ## 📝 Environment Variables
 
 ### Frontend (.env.local)
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
 
 ### Backend (.env)
 ```env
-PORT=3001
+PORT=4000
 NODE_ENV=development
 ```
 
