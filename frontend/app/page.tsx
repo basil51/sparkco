@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { ArrowRight, Check, Star, Users, Shield, Zap } from 'lucide-react'
 import ContactForm from './components/ContactForm'
 import ImagePlaceholder from './components/ImagePlaceholder'
+import TeamTree from './components/TeamTree'
 
 export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
@@ -143,35 +144,12 @@ export default function HomePage() {
       <section id="team" className="py-20 bg-white/5 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Meet Our Team</h2>
-            <p className="text-xl text-white/70">Expert developers and designers dedicated to your success.</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Our Team Structure</h2>
+            <p className="text-xl text-white/70">Meet the experts behind Sparkco VIP's success.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <ImagePlaceholder
-              type="team"
-              title="Basel"
-              description="Lead Developer & Founder"
-              className="hover:scale-105 transition-transform duration-300"
-            />
-            <ImagePlaceholder
-              type="team"
-              title="Development Team"
-              description="Full-Stack Developers"
-              className="hover:scale-105 transition-transform duration-300"
-            />
-            <ImagePlaceholder
-              type="team"
-              title="Design Team"
-              description="UI/UX Specialists"
-              className="hover:scale-105 transition-transform duration-300"
-            />
-            <ImagePlaceholder
-              type="team"
-              title="Project Managers"
-              description="Agile & Scrum Experts"
-              className="hover:scale-105 transition-transform duration-300"
-            />
+          <div className="max-w-6xl mx-auto">
+            <TeamTree />
           </div>
         </div>
       </section>
