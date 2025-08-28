@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowRight, Check, Star, Users, Shield, Zap } from 'lucide-react'
+import ContactForm from './components/ContactForm'
+import ImagePlaceholder from './components/ImagePlaceholder'
 
 export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
@@ -137,6 +139,43 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Team Section */}
+      <section id="team" className="py-20 bg-white/5 backdrop-blur-sm">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Meet Our Team</h2>
+            <p className="text-xl text-white/70">Expert developers and designers dedicated to your success.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <ImagePlaceholder
+              type="team"
+              title="Basel"
+              description="Lead Developer & Founder"
+              className="hover:scale-105 transition-transform duration-300"
+            />
+            <ImagePlaceholder
+              type="team"
+              title="Development Team"
+              description="Full-Stack Developers"
+              className="hover:scale-105 transition-transform duration-300"
+            />
+            <ImagePlaceholder
+              type="team"
+              title="Design Team"
+              description="UI/UX Specialists"
+              className="hover:scale-105 transition-transform duration-300"
+            />
+            <ImagePlaceholder
+              type="team"
+              title="Project Managers"
+              description="Agile & Scrum Experts"
+              className="hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section id="testimonials" className="py-20">
         <div className="container mx-auto px-6">
@@ -174,21 +213,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Contact Section */}
       <section id="contact" className="py-20">
         <div className="container mx-auto px-6">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center">
+          <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready to Transform Your Business?</h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-white/70 max-w-2xl mx-auto">
               Join hundreds of satisfied clients who've accelerated their growth with our solutions. Let's discuss your project today.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
-                Start Your Project
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300">
-                Schedule a Call
-              </button>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+              <ContactForm />
             </div>
           </div>
         </div>
