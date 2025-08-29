@@ -7,12 +7,15 @@ import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 export const metadata: Metadata = {
   title: 'Sparkco VIP - Software Development & SaaS Services',
   description: 'Professional software development, SaaS solutions, and custom applications. Specializing in appointment booking, predictive maintenance, legal management, and web development.',
   keywords: 'software development, SaaS, appointment booking, predictive maintenance, lawyer management, web development',
   authors: [{ name: 'Sparkco VIP' }],
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   openGraph: {
     title: 'Sparkco VIP - Software Development & SaaS Services',

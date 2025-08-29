@@ -1,15 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ContactDto } from './dto/contact.dto';
-import * as nodemailer from 'nodemailer';
+import { createTransport, Transporter } from 'nodemailer';
 
 @Injectable()
 export class ContactService {
   private readonly logger = new Logger(ContactService.name);
-  private transporter: nodemailer.Transporter;
+  private transporter: Transporter;
 
   constructor() {
     // Initialize email transporter
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false, // true for 465, false for other ports
@@ -24,11 +24,17 @@ export class ContactService {
     try {
       this.logger.log(`New contact form submission from: ${contactData.email}`);
 
-      // Send email notification
-      await this.sendEmailNotification(contactData);
-
       // Log the submission
       this.logger.log(`Contact form submitted successfully for: ${contactData.name} (${contactData.email})`);
+
+      // Try to send email notification (optional for now)
+      try {
+        await this.sendEmailNotification(contactData);
+        this.logger.log('Email notification sent successfully');
+      } catch (emailError) {
+        this.logger.warn(`Email notification failed: ${emailError.message}`);
+        // Don't fail the entire request if email fails
+      }
 
       return {
         success: true,
