@@ -25,6 +25,7 @@ export default function Header() {
             <Link href="/#about" className="text-white/80 hover:text-white transition-colors">About</Link>
             <Link href="/#team" className="text-white/80 hover:text-white transition-colors">Team</Link>
             <Link href="/#testimonials" className="text-white/80 hover:text-white transition-colors">Testimonials</Link>
+            <Link href="/#faq" className="text-white/80 hover:text-white transition-colors">FAQ</Link>
             <Link href="/#contact" className="text-white/80 hover:text-white transition-colors">Contact</Link>
             <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
               Get Started
@@ -49,6 +50,7 @@ export default function Header() {
               <Link href="/#about" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>About</Link>
               <Link href="/#team" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>Team</Link>
               <Link href="/#testimonials" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>Testimonials</Link>
+              <Link href="/#faq" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
               <Link href="/#contact" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
               <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 w-full">
                 Get Started

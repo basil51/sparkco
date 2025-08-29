@@ -4,6 +4,7 @@ import './globals.css'
 import Header from './components/Header'
 import { Code, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import GoogleAnalytics from './components/GoogleAnalytics'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,6 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} antialiased bg-gray-50`}>
+        <GoogleAnalytics />
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
           <Header />
           {children}

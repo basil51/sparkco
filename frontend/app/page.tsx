@@ -5,6 +5,7 @@ import { ArrowRight, Check, Star, Users, Shield, Zap } from 'lucide-react'
 import ContactForm from './components/ContactForm'
 import ImagePlaceholder from './components/ImagePlaceholder'
 import TeamTree from './components/TeamTree'
+import FAQ from './components/FAQ'
 
 export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
@@ -19,7 +20,7 @@ export default function HomePage() {
     {
       name: "Ahmed Al-Rashid",
       role: "Senior Partner, Al-Rashid Law Firm",
-      content: "The Arabic lawyer management system is exactly what we needed. Efficient, reliable, and culturally appropriate.",
+      content: "The Multi language lawyer management system is exactly what we needed. Efficient, reliable, and culturally appropriate.",
       rating: 5
     },
     {
@@ -188,6 +189,20 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 bg-white/5 backdrop-blur-sm">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Frequently Asked Questions</h2>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto">
+              Get answers to common questions about our services and process.
+            </p>
+          </div>
+          
+          <FAQ />
         </div>
       </section>
 
