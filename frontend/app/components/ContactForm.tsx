@@ -72,25 +72,35 @@ export default function ContactForm() {
     setIsSubmitting(true)
 
     try {
-      // For now, we'll simulate the API call
-      // TODO: Replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Simulate successful submission
-      setIsSubmitted(true)
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        phone: '',
-        service: '',
-        message: ''
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/contact/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       })
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => setIsSubmitted(false), 5000)
+
+      const result = await response.json()
+
+      if (result.success) {
+        setIsSubmitted(true)
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          phone: '',
+          service: '',
+          message: ''
+        })
+        
+        // Reset success message after 5 seconds
+        setTimeout(() => setIsSubmitted(false), 5000)
+      } else {
+        throw new Error(result.message || 'Failed to submit form')
+      }
     } catch (error) {
       console.error('Error submitting form:', error)
+      alert('Failed to submit form. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }
