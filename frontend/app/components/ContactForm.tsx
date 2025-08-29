@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Send, Check, AlertCircle } from 'lucide-react'
+import { useAnalytics } from '../hooks/useAnalytics'
 
 interface FormData {
   name: string
@@ -17,6 +18,8 @@ interface FormErrors {
 }
 
 export default function ContactForm() {
+  const { trackContactForm } = useAnalytics()
+  
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -83,6 +86,9 @@ export default function ContactForm() {
       const result = await response.json()
 
       if (result.success) {
+        // Track successful form submission
+        trackContactForm()
+        
         setIsSubmitted(true)
         setFormData({
           name: '',
