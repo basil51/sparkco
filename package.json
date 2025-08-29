@@ -1,6 +1,14 @@
-{
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											{
 	"scripts": {
-		"dev": "concurrently \"pnpm --filter frontend dev\" \"pnpm --filter backend start\""
+		"dev": "concurrently \"pnpm --filter frontend dev\" \"pnpm --filter backend start\"",
+		"build": "pnpm --filter frontend build && pnpm --filter backend build",
+		"build:frontend": "pnpm --filter frontend build",
+		"build:backend": "pnpm --filter backend build",
+		"start": "concurrently \"pnpm --filter frontend start\" \"pnpm --filter backend start:prod\"",
+		"start:frontend": "pnpm --filter frontend start",
+		"start:backend": "pnpm --filter backend start:prod",
+		"lint": "pnpm --filter frontend lint && pnpm --filter backend lint",
+		"test": "pnpm --filter backend test"
 	},
 	"devDependencies": {
 		"concurrently": "^9.2.0"
