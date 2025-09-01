@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # Frontend - Next.js application (main domain: sparkco.vip)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    networks:
+      - appnet
+    ports:
+      - "127.0.0.1:31001:3000"  # Main domain port as requested
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Backend - NestJS API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+    networks:
+      - appnet
+    ports:
+      - "127.0.0.1:31002:3001"  # Backend API port
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: sparkco
+      POSTGRES_USER: sparkco
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./shared/backups/postgres:/backups
+    networks:
+      - appnet
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sparkco -d sparkco"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    networks:
+      - appnet
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Database Migration Service (run once)
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env.production
+    command: ["echo", "Migration service - run manually if needed"]
+    networks:
+      - appnet
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    profiles:
+      - migrate
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  postgres_data:
