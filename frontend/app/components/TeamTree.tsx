@@ -103,11 +103,23 @@ export default function TeamTree() {
   return (
     <div className="space-y-8">
       {/* CEO/Founder - Basel */}
-      <div className="text-center">
+        <div className="text-center">
         <div className="inline-block">
           <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 border-4 border-white/20 shadow-2xl">
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="w-10 h-10 text-white" />
+            <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-4 border-white/30">
+              <img
+                src="/images/team/basel.jpg"
+                alt="Basel - CEO & Lead Developer"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  e.currentTarget.style.display = 'none'
+                  e.currentTarget.nextElementSibling.style.display = 'flex'
+                }}
+              />
+              <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center hidden">
+                <Users className="w-10 h-10 text-white" />
+              </div>
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">Basel</h3>
             <p className="text-white/90 font-semibold mb-2">CEO & Lead Developer</p>

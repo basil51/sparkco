@@ -19,7 +19,8 @@ export const useAnalytics = () => {
 
   const trackPageView = (url: string) => {
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', 'G-S8DQJ18H3H', {
+      const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-S8DQJ18H3H'
+      window.gtag('config', GA_ID, {
         page_path: url
       })
     }
@@ -41,12 +42,32 @@ export const useAnalytics = () => {
     trackEvent('click', 'Navigation', section)
   }
 
+  const trackButtonClick = (buttonText: string, location: string) => {
+    trackEvent('click', 'Button', buttonText, undefined)
+  }
+
+  const trackProductView = (productName: string) => {
+    trackEvent('view_item', 'Product', productName)
+  }
+
+  const trackScrollDepth = (percentage: number) => {
+    trackEvent('scroll', 'Engagement', `${percentage}%_scroll`, percentage)
+  }
+
+  const trackTimeOnPage = (seconds: number) => {
+    trackEvent('timing_complete', 'Engagement', 'page_view_time', seconds)
+  }
+
   return {
     trackEvent,
     trackPageView,
     trackContactForm,
     trackServiceClick,
     trackProductClick,
-    trackNavigation
+    trackNavigation,
+    trackButtonClick,
+    trackProductView,
+    trackScrollDepth,
+    trackTimeOnPage
   }
 }

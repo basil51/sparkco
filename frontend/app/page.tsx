@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ArrowRight, Check, Star, Users, Shield, Zap } from 'lucide-react'
 import ContactForm from './components/ContactForm'
 import ImagePlaceholder from './components/ImagePlaceholder'
@@ -9,6 +10,7 @@ import FAQ from './components/FAQ'
 
 export default function HomePage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const router = useRouter()
 
   const testimonials = [
     {
@@ -60,11 +62,19 @@ export default function HomePage() {
               Professional software development and SaaS solutions that drive growth, efficiency, and innovation for modern businesses.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button
+                onClick={() => {
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg cursor-pointer"
+              >
                 Start Your Project
                 <ArrowRight className="w-5 h-5 ml-2 inline-block" />
               </button>
-              <button className="border-2 border-white/30 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300">
+              <button
+                onClick={() => router.push('/products')}
+                className="border-2 border-white/30 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300 cursor-pointer"
+              >
                 View Our Work
               </button>
             </div>

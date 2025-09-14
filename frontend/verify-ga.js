@@ -1,45 +1,41 @@
-// Script to verify Google Analytics is working
-// Run this in the browser console on your website
+// Google Analytics Verification Script
+// Run this in browser console to test GA4 implementation
 
-console.log('🔍 Checking Google Analytics setup...');
+console.log('🔍 Google Analytics Verification Starting...');
 
 // Check if gtag is loaded
-if (typeof window.gtag === 'function') {
-  console.log('✅ Google Analytics gtag function is available');
-  
-  // Check if dataLayer exists
-  if (window.dataLayer) {
-    console.log('✅ Data layer is available');
-    console.log('📊 Current dataLayer:', window.dataLayer);
-  } else {
-    console.log('❌ Data layer is not available');
-  }
-  
-  // Test sending an event
-  try {
-    window.gtag('event', 'test_event', {
-      event_category: 'Test',
-      event_label: 'GA Verification'
-    });
-    console.log('✅ Test event sent successfully');
-  } catch (error) {
-    console.log('❌ Failed to send test event:', error);
-  }
-  
+if (typeof gtag !== 'undefined') {
+  console.log('✅ gtag function is available');
 } else {
-  console.log('❌ Google Analytics gtag function is not available');
-  console.log('🔧 Please check your GA4 setup');
+  console.log('❌ gtag function not found');
 }
 
-// Check for GA4 measurement ID
-const scripts = document.querySelectorAll('script[src*="googletagmanager"]');
-if (scripts.length > 0) {
-  console.log('✅ Google Tag Manager script found');
-  scripts.forEach((script, index) => {
-    console.log(`📜 Script ${index + 1}:`, script.src);
+// Check GA4 configuration
+if (window.dataLayer) {
+  console.log('✅ DataLayer is initialized');
+  console.log('📊 DataLayer events:', window.dataLayer);
+} else {
+  console.log('❌ DataLayer not found');
+}
+
+// Test event tracking
+console.log('🧪 Testing event tracking...');
+if (typeof gtag !== 'undefined') {
+  gtag('event', 'test_event', {
+    event_category: 'verification',
+    event_label: 'manual_test',
+    value: 1
   });
-} else {
-  console.log('❌ Google Tag Manager script not found');
+  console.log('✅ Test event sent');
 }
 
-console.log('🔍 GA Verification complete');
+// Check for GA script in DOM
+const gaScript = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+if (gaScript) {
+  console.log('✅ GA4 script found in DOM');
+  console.log('📋 GA Script src:', gaScript.src);
+} else {
+  console.log('❌ GA4 script not found in DOM');
+}
+
+console.log('🎯 Verification complete! Check Google Analytics Real-time events.');

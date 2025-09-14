@@ -116,3 +116,8 @@ temp/
 package-lock.json
 yarn.lock
 # Keep pnpm-lock.yaml as it's used in this project
+
+# Docker images (too large for git)
+*.tar
+frontend.tar
+backend.tar

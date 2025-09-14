@@ -20,12 +20,16 @@ export class ContactService {
     });
   }
 
-  async submitContactForm(contactData: ContactDto): Promise<{ success: boolean; message: string }> {
+  async submitContactForm(
+    contactData: ContactDto,
+  ): Promise<{ success: boolean; message: string }> {
     try {
       this.logger.log(`New contact form submission from: ${contactData.email}`);
 
       // Log the submission
-      this.logger.log(`Contact form submitted successfully for: ${contactData.name} (${contactData.email})`);
+      this.logger.log(
+        `Contact form submitted successfully for: ${contactData.name} (${contactData.email})`,
+      );
 
       // Try to send email notification (optional for now)
       try {
@@ -38,10 +42,14 @@ export class ContactService {
 
       return {
         success: true,
-        message: 'Thank you for your message! We will get back to you within 24 hours.'
+        message:
+          'Thank you for your message! We will get back to you within 24 hours.',
       };
     } catch (error) {
-      this.logger.error(`Error processing contact form: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error processing contact form: ${error.message}`,
+        error.stack,
+      );
       throw new Error('Failed to submit contact form. Please try again later.');
     }
   }
@@ -57,12 +65,14 @@ export class ContactService {
     };
 
     await this.transporter.sendMail(mailOptions);
-    this.logger.log(`Email notification sent for contact form from: ${contactData.email}`);
+    this.logger.log(
+      `Email notification sent for contact form from: ${contactData.email}`,
+    );
   }
 
   private generateEmailContent(contactData: ContactDto): string {
     const timestamp = new Date().toLocaleString();
-    
+
     return `
       <!DOCTYPE html>
       <html>
@@ -93,24 +103,36 @@ export class ContactService {
               <div class="label">Email:</div>
               <div class="value">${contactData.email}</div>
             </div>
-            ${contactData.company ? `
+            ${
+              contactData.company
+                ? `
             <div class="field">
               <div class="label">Company:</div>
               <div class="value">${contactData.company}</div>
             </div>
-            ` : ''}
-            ${contactData.phone ? `
+            `
+                : ''
+            }
+            ${
+              contactData.phone
+                ? `
             <div class="field">
               <div class="label">Phone:</div>
               <div class="value">${contactData.phone}</div>
             </div>
-            ` : ''}
-            ${contactData.service ? `
+            `
+                : ''
+            }
+            ${
+              contactData.service
+                ? `
             <div class="field">
               <div class="label">Service of Interest:</div>
               <div class="value">${contactData.service}</div>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
             <div class="field">
               <div class="label">Message:</div>
               <div class="value">${contactData.message.replace(/\n/g, '<br>')}</div>

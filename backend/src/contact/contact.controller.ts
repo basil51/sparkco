@@ -1,4 +1,11 @@
-import { Controller, Post, Body, ValidationPipe, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { ContactDto } from './dto/contact.dto';
 
@@ -13,16 +20,16 @@ export class ContactController {
       return {
         success: true,
         message: result.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       throw new HttpException(
         {
           success: false,
           message: error.message || 'Failed to submit contact form',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -34,8 +41,10 @@ export class ContactController {
       return {
         success: true,
         connected: isConnected,
-        message: isConnected ? 'Email connection successful' : 'Email connection failed',
-        timestamp: new Date().toISOString()
+        message: isConnected
+          ? 'Email connection successful'
+          : 'Email connection failed',
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       throw new HttpException(
@@ -43,9 +52,9 @@ export class ContactController {
           success: false,
           message: 'Failed to test email connection',
           error: error.message,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
