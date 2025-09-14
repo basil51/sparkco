@@ -2,7 +2,7 @@
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void
+    gtag: (command: string, targetId: string, config?: Record<string, unknown>) => void
   }
 }
 
@@ -43,7 +43,7 @@ export const useAnalytics = () => {
   }
 
   const trackButtonClick = (buttonText: string, location: string) => {
-    trackEvent('click', 'Button', buttonText, undefined)
+    trackEvent('click', 'Button', `${buttonText} - ${location}`)
   }
 
   const trackProductView = (productName: string) => {

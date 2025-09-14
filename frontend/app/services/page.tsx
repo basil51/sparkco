@@ -1,8 +1,11 @@
 'use client'
 
 import { Globe, Smartphone, Cloud, Brain, Puzzle, Wrench, ArrowRight, Check, Code, Database, Shield, Zap, Users, Settings } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function ServicesPage() {
+  const router = useRouter()
+
   const services = [
     {
       icon: Globe,
@@ -204,7 +207,10 @@ export default function ServicesPage() {
                   </div>
                 </div>
                 
-                <button className="text-blue-400 hover:text-blue-300 font-semibold flex items-center transition-colors group-hover:translate-x-2 duration-300">
+                <button
+                  onClick={() => router.push('/#contact')}
+                  className="text-blue-400 hover:text-blue-300 font-semibold flex items-center transition-colors group-hover:translate-x-2 duration-300 cursor-pointer"
+                >
                   Get Started
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </button>
@@ -273,13 +279,19 @@ export default function ServicesPage() {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready to Start Your Project?</h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Let's discuss your requirements and create a custom solution that perfectly fits your business needs.
+              Let&apos;s discuss your requirements and create a custom solution that perfectly fits your business needs.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+              <button
+                onClick={() => router.push('/#contact')}
+                className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              >
                 Get Free Consultation
               </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300">
+              <button
+                onClick={() => router.push('/products')}
+                className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300 cursor-pointer"
+              >
                 View Portfolio
               </button>
             </div>

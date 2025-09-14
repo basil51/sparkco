@@ -128,7 +128,7 @@ export default function ContactForm() {
         <Check className="w-16 h-16 text-green-400 mx-auto mb-4" />
         <h3 className="text-2xl font-bold text-white mb-2">Message Sent Successfully!</h3>
         <p className="text-white/70">
-          Thank you for contacting us. We'll get back to you within 24 hours.
+          Thank you for contacting us. We&apos;ll get back to you within 24 hours.
         </p>
       </div>
     )

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Check, Star, Users, Shield, Zap } from 'lucide-react'
 import ContactForm from './components/ContactForm'
-import ImagePlaceholder from './components/ImagePlaceholder'
 import TeamTree from './components/TeamTree'
 import FAQ from './components/FAQ'
 
@@ -38,7 +37,7 @@ export default function HomePage() {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [testimonials.length])
 
   const stats = [
     { label: "Happy Clients", value: "150+", icon: Users },
@@ -156,7 +155,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Our Team Structure</h2>
-            <p className="text-xl text-white/70">Meet the experts behind Sparkco VIP's success.</p>
+            <p className="text-xl text-white/70">Meet the experts behind Sparkco VIP&apos;s success.</p>
           </div>
 
           <div className="max-w-6xl mx-auto">
@@ -181,7 +180,7 @@ export default function HomePage() {
                     <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-xl text-white/90 mb-6 italic">"{testimonials[currentTestimonial].content}"</p>
+                <p className="text-xl text-white/90 mb-6 italic">&ldquo;{testimonials[currentTestimonial].content}&rdquo;</p>
                 <div className="text-white font-semibold">{testimonials[currentTestimonial].name}</div>
                 <div className="text-white/60">{testimonials[currentTestimonial].role}</div>
               </div>
@@ -222,7 +221,7 @@ export default function HomePage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready to Transform Your Business?</h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Join hundreds of satisfied clients who've accelerated their growth with our solutions. Let's discuss your project today.
+              Join hundreds of satisfied clients who&apos;ve accelerated their growth with our solutions. Let&apos;s discuss your project today.
             </p>
           </div>
           

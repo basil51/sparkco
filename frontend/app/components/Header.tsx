@@ -1,11 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { Code, Menu, X, ExternalLink } from 'lucide-react'
+import { Code, Menu, X } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const router = useRouter()
+
+  const handleGetStarted = () => {
+    setIsMenuOpen(false) // Close mobile menu if open
+    router.push('/#contact')
+  }
 
   return (
     <header className="fixed w-full top-0 z-50 bg-white/10 backdrop-blur-lg border-b border-white/20">
@@ -27,7 +34,10 @@ export default function Header() {
             <Link href="/#testimonials" className="text-white/80 hover:text-white transition-colors">Testimonials</Link>
             <Link href="/#faq" className="text-white/80 hover:text-white transition-colors">FAQ</Link>
             <Link href="/#contact" className="text-white/80 hover:text-white transition-colors">Contact</Link>
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
+            <button
+              onClick={handleGetStarted}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+            >
               Get Started
             </button>
           </nav>
@@ -52,7 +62,10 @@ export default function Header() {
               <Link href="/#testimonials" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>Testimonials</Link>
               <Link href="/#faq" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
               <Link href="/#contact" className="text-white/80 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 w-full">
+              <button
+                onClick={handleGetStarted}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 w-full cursor-pointer"
+              >
                 Get Started
               </button>
             </nav>

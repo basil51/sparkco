@@ -1,5 +1,6 @@
-import { Users, Code, Palette, Briefcase, ChevronDown } from 'lucide-react'
+import { Users, Code, Palette, Briefcase, ChevronDown, LucideIcon } from 'lucide-react'
 import { useState } from 'react'
+import Image from 'next/image'
 
 interface TeamMember {
   name: string
@@ -10,7 +11,7 @@ interface TeamMember {
 
 interface Department {
   name: string
-  icon: any
+  icon: LucideIcon
   description: string
   members: TeamMember[]
   color: string
@@ -107,14 +108,20 @@ export default function TeamTree() {
         <div className="inline-block">
           <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 border-4 border-white/20 shadow-2xl">
             <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-4 border-white/30">
-              <img
+              <Image
                 src="/images/team/basel.jpg"
                 alt="Basel - CEO & Lead Developer"
+                width={80}
+                height={80}
                 className="w-full h-full object-cover"
-                onError={(e) => {
+                onError={() => {
                   // Fallback to placeholder if image fails to load
-                  e.currentTarget.style.display = 'none'
-                  e.currentTarget.nextElementSibling.style.display = 'flex'
+                  const img = document.querySelector('[alt="Basel - CEO & Lead Developer"]') as HTMLImageElement
+                  const placeholder = img?.nextElementSibling as HTMLElement
+                  if (img && placeholder) {
+                    img.style.display = 'none'
+                    placeholder.style.display = 'flex'
+                  }
                 }}
               />
               <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center hidden">

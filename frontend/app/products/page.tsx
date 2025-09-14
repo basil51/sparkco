@@ -1,8 +1,11 @@
 'use client'
 
-import { Calendar, Wrench, Scale, Globe, Book, Check, ExternalLink, Play } from 'lucide-react'
+import { Calendar, Wrench, Scale, Book, Check, ExternalLink, Play } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function ProductsPage() {
+  const router = useRouter()
+
   const products = [
     {
       icon: Calendar,
@@ -111,7 +114,10 @@ export default function ProductsPage() {
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Visit Product
                   </a>
-                  <button className="px-6 py-3 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center">
+                  <button
+                    onClick={() => alert(`Demo for ${product.title} will be available soon! In the meantime, visit ${product.preview} to explore the live product.`)}
+                    className="px-6 py-3 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center cursor-pointer"
+                  >
                     <Play className="w-4 h-4 mr-2" />
                     Demo
                   </button>
@@ -135,10 +141,16 @@ export default function ProductsPage() {
               Our products are just the beginning. We build tailored solutions that perfectly match your unique business requirements and workflows.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+              <button
+                onClick={() => router.push('/#contact')}
+                className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              >
                 Request Custom Product
               </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300">
+              <button
+                onClick={() => router.push('/#contact')}
+                className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/10 transition-all duration-300 cursor-pointer"
+              >
                 Schedule Consultation
               </button>
             </div>
