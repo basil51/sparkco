@@ -75,7 +75,7 @@ export default function ContactForm() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/contact/submit`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/contact/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

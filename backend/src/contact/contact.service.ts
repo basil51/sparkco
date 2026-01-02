@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ContactDto } from './dto/contact.dto';
 import { createTransport, Transporter } from 'nodemailer';
+import xss from 'xss';
+import { escape } from 'validator';
 
 @Injectable()
 export class ContactService {
@@ -22,18 +24,33 @@ export class ContactService {
 
   async submitContactForm(
     contactData: ContactDto,
-  ): Promise<{ success: boolean; message: string }> {
+    ): Promise<{ success: boolean; message: string }> {
     try {
-      this.logger.log(`New contact form submission from: ${contactData.email}`);
+      // Sanitize all input data to prevent XSS attacks
+      const sanitizedData: ContactDto = {
+        name: this.sanitizeInput(contactData.name),
+        email: this.sanitizeInput(contactData.email),
+        company: contactData.company ? this.sanitizeInput(contactData.company) : undefined,
+        phone: contactData.phone ? this.sanitizeInput(contactData.phone) : undefined,
+        service: contactData.service ? this.sanitizeInput(contactData.service) : undefined,
+        message: this.sanitizeInput(contactData.message),
+      };
 
-      // Log the submission
+      // Validate email format
+      if (!this.isValidEmail(sanitizedData.email)) {
+        throw new Error('Invalid email format');
+      }
+
+      this.logger.log(`New contact form submission from: ${sanitizedData.email}`);
+
+      // Log the submission (without sensitive data)
       this.logger.log(
-        `Contact form submitted successfully for: ${contactData.name} (${contactData.email})`,
+        `Contact form submitted successfully for: ${sanitizedData.name} (${sanitizedData.email})`,
       );
 
       // Try to send email notification (optional for now)
       try {
-        await this.sendEmailNotification(contactData);
+        await this.sendEmailNotification(sanitizedData);
         this.logger.log('Email notification sent successfully');
       } catch (emailError) {
         this.logger.warn(`Email notification failed: ${emailError.message}`);
@@ -50,8 +67,29 @@ export class ContactService {
         `Error processing contact form: ${error.message}`,
         error.stack,
       );
-      throw new Error('Failed to submit contact form. Please try again later.');
+      // Don't expose internal error details in production
+      const errorMessage = process.env.NODE_ENV === 'production'
+        ? 'Failed to submit contact form. Please try again later.'
+        : error.message;
+      throw new Error(errorMessage);
     }
+  }
+
+  /**
+   * Sanitize input to prevent XSS attacks
+   */
+  private sanitizeInput(input: string): string {
+    if (!input) return '';
+    // First escape HTML entities, then use XSS filter
+    return xss(escape(input.trim()));
+  }
+
+  /**
+   * Validate email format
+   */
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   private async sendEmailNotification(contactData: ContactDto): Promise<void> {
@@ -72,6 +110,14 @@ export class ContactService {
 
   private generateEmailContent(contactData: ContactDto): string {
     const timestamp = new Date().toLocaleString();
+    
+    // Sanitize all user input before inserting into HTML
+    const safeName = this.escapeHtml(contactData.name);
+    const safeEmail = this.escapeHtml(contactData.email);
+    const safeCompany = contactData.company ? this.escapeHtml(contactData.company) : '';
+    const safePhone = contactData.phone ? this.escapeHtml(contactData.phone) : '';
+    const safeService = contactData.service ? this.escapeHtml(contactData.service) : '';
+    const safeMessage = this.escapeHtml(contactData.message).replace(/\n/g, '<br>');
 
     return `
       <!DOCTYPE html>
@@ -97,18 +143,18 @@ export class ContactService {
           <div class="content">
             <div class="field">
               <div class="label">Name:</div>
-              <div class="value">${contactData.name}</div>
+              <div class="value">${safeName}</div>
             </div>
             <div class="field">
               <div class="label">Email:</div>
-              <div class="value">${contactData.email}</div>
+              <div class="value">${safeEmail}</div>
             </div>
             ${
               contactData.company
                 ? `
             <div class="field">
               <div class="label">Company:</div>
-              <div class="value">${contactData.company}</div>
+              <div class="value">${safeCompany}</div>
             </div>
             `
                 : ''
@@ -118,7 +164,7 @@ export class ContactService {
                 ? `
             <div class="field">
               <div class="label">Phone:</div>
-              <div class="value">${contactData.phone}</div>
+              <div class="value">${safePhone}</div>
             </div>
             `
                 : ''
@@ -128,14 +174,14 @@ export class ContactService {
                 ? `
             <div class="field">
               <div class="label">Service of Interest:</div>
-              <div class="value">${contactData.service}</div>
+              <div class="value">${safeService}</div>
             </div>
             `
                 : ''
             }
             <div class="field">
               <div class="label">Message:</div>
-              <div class="value">${contactData.message.replace(/\n/g, '<br>')}</div>
+              <div class="value">${safeMessage}</div>
             </div>
             <div class="footer">
               <p>This message was sent from the Sparkco VIP contact form.</p>
@@ -146,6 +192,21 @@ export class ContactService {
       </body>
       </html>
     `;
+  }
+
+  /**
+   * Escape HTML entities to prevent XSS in email content
+   */
+  private escapeHtml(text: string): string {
+    if (!text) return '';
+    const map: { [key: string]: string } = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+    };
+    return text.replace(/[&<>"']/g, (m) => map[m]);
   }
 
   async testEmailConnection(): Promise<boolean> {

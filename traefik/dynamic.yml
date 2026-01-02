@@ -1,0 +1,30 @@
+http:
+  middlewares:
+    security-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - PUT
+          - POST
+          - DELETE
+        accessControlMaxAge: 100
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"
+        referrerPolicy: "same-origin"
+        customFrameOptionsValue: "SAMEORIGIN"
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        sslRedirect: true
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        forceSTSHeader: true
+        isDevelopment: false
+
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50

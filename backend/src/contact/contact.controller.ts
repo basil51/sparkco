@@ -6,6 +6,7 @@ import {
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ContactService } from './contact.service';
 import { ContactDto } from './dto/contact.dto';
 
@@ -13,6 +14,7 @@ import { ContactDto } from './dto/contact.dto';
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
   @Post('submit')
   async submitContactForm(@Body(ValidationPipe) contactData: ContactDto) {
     try {
