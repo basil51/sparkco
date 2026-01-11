@@ -1,0 +1,65 @@
+# Local dev compose:
+# - Uses the shared external Traefik from ~/web/traefik
+# - Publishes routes on:
+#   - http://${BASE_DOMAIN} (web frontend)
+#   - http://${BASE_DOMAIN}/api (API backend)
+#
+# Environment variable required:
+#   BASE_DOMAIN - Base domain for the application (e.g., sparkco.localhost)
+#   Set via .env.local file or export BASE_DOMAIN=sparkco.localhost
+#
+# Usage:
+#   export BASE_DOMAIN=sparkco.localhost
+#   docker compose -f docker-compose.local.yml --env-file .env.local up -d --build
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sparkco-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://${BASE_DOMAIN}/api
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.sparkco.rule=Host(`${BASE_DOMAIN}`)"
+      - "traefik.http.routers.sparkco.entrypoints=web"
+      - "traefik.http.services.sparkco.loadbalancer.server.port=3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sparkco-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      FRONTEND_URL: http://${BASE_DOMAIN}
+      SMTP_HOST: ""
+      SMTP_PORT: ""
+      SMTP_USER: ""
+      SMTP_PASS: ""
+      CONTACT_EMAIL: basel@sparkco.vip
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.sparkco-api.rule=Host(`${BASE_DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.sparkco-api.entrypoints=web"
+      - "traefik.http.routers.sparkco-api.priority=100"
+      - "traefik.http.services.sparkco-api.loadbalancer.server.port=4000"
+
+networks:
+  traefik:
+    external: true
+    name: traefik
+
