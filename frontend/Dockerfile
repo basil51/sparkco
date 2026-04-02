@@ -11,8 +11,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN pnpm install --no-frozen-lockfile
+# Install dependencies (pinned lockfile for reproducible, auditable builds)
+RUN pnpm install --frozen-lockfile
 
 # Builder stage
 FROM base AS builder

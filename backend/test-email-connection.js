@@ -1,13 +1,18 @@
-// Test script for email connection
+// Test script for email connection (local dev: POST /api/contact/test-email)
+const base = process.env.API_URL || 'http://localhost:4000';
+const secret = process.env.EMAIL_TEST_SECRET;
+
 const testEmailConnection = async () => {
   try {
     console.log('🧪 Testing Email Connection...');
-    
-    const response = await fetch('http://localhost:4000/contact/test-email', {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(secret ? { 'x-email-test-secret': secret } : {}),
+    };
+
+    const response = await fetch(`${base.replace(/\/$/, '')}/api/contact/test-email`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     });
 
     const result = await response.json();

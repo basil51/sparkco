@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Correct client IPs behind Traefik / reverse proxy (rate limiting, logs)
+  if (process.env.TRUST_PROXY !== '0') {
+    app.set('trust proxy', 1);
+  }
 
   // Security: Helmet for security headers
   app.use(helmet({

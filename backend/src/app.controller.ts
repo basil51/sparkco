@@ -1,20 +1,21 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getRoot(): { ok: boolean } {
+    return { ok: true };
   }
 
   @Get('health')
   getHealth() {
+    const ts = new Date().toISOString();
+    if (process.env.NODE_ENV === 'production') {
+      return { status: 'ok', timestamp: ts };
+    }
     return {
       status: 'ok',
-      timestamp: new Date().toISOString(),
+      timestamp: ts,
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
     };

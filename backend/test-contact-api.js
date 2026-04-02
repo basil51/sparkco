@@ -12,7 +12,7 @@ const testContactForm = async () => {
   try {
     console.log('🧪 Testing Contact Form API...');
     
-    const response = await fetch('http://localhost:4000/contact/submit', {
+    const response = await fetch('http://localhost:4000/api/contact/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

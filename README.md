@@ -107,6 +107,54 @@ pnpm build
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:4000
 
+## 🐳 Docker & Traefik
+
+### Local (single host)
+
+Runs Traefik plus the app so routers show up in the dashboard. Site is served at **http://sparkco.localhost** (most systems resolve `*.localhost` to `127.0.0.1`; if not, add `127.0.0.1 sparkco.localhost` to `/etc/hosts`).
+
+```bash
+docker compose -f docker-compose.local.yml up --build
+```
+
+- **App**: http://sparkco.localhost  
+- **Traefik dashboard**: http://localhost:8080/dashboard/  
+
+API traffic uses the same host: the frontend calls `http://sparkco.localhost/...` and Traefik sends `/api` to the NestJS container.
+
+### Local (your own Traefik)
+
+Docker Compose needs a **user-defined** network shared with Traefik (the default `bridge` network cannot be used for multi-service compose).
+
+```bash
+docker network create traefik   # once
+docker network connect traefik traefik   # attach your running Traefik container
+# In Traefik’s command, add: --providers.docker.network=traefik
+
+cp .env.docker.local.example .env.docker.local
+docker compose --env-file .env.docker.local up -d --build
+```
+
+`TRAEFIK_NETWORK` in `.env.docker.local` must match that network name (default `traefik`).
+
+Match `TRAEFIK_ENTRYPOINT` to your Traefik entrypoint (`web` on plain HTTP; `websecure` if TLS terminates there).
+
+**`/etc/hosts`:** ensure `127.0.0.1 sparkco.localhost` if `*.localhost` does not resolve on your OS.
+
+After reboot, containers come back automatically (`restart: unless-stopped`). Use `docker compose --env-file .env.docker.local down` to stop and remove them.
+
+### Production (`sparkco.vip`)
+
+Uses `docker-compose.prod.yml`: TLS, Let’s Encrypt, site at `sparkco.vip` / `www.sparkco.vip`, API on the same host under `/api`, dashboard at `traefik.sparkco.vip`.
+
+```bash
+docker network create web
+touch traefik/acme.json && chmod 600 traefik/acme.json
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+On the server, create `backend/.env.production` (SMTP, DB, etc.); the compose file marks it optional only so `docker compose config` works without secrets in the repo. Ensure DNS A/AAAA records point to the server and ports **80** and **443** reach Traefik.
+
 ## 📝 Environment Variables
 
 ### Frontend (.env.local)

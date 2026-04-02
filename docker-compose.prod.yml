@@ -1,0 +1,78 @@
+# Production (server): Traefik on external `traefik` network, TLS on API via BASE_DOMAIN.
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sparkco-frontend
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://${BASE_DOMAIN}
+
+    networks:
+      - traefik
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+      # Router (Main Website)
+      - "traefik.http.routers.sparkco-web.rule=Host(`${BASE_DOMAIN}`)"
+
+      # EntryPoints (auto: http local / https VPS)
+      - "traefik.http.routers.sparkco-web.entrypoints=web"
+
+      # TLS (only works on VPS, ignored locally)
+      # "traefik.http.routers.sparkco-web.tls=${ENABLE_TLS}"
+      #- "traefik.http.routers.sparkco-web.tls.certresolver=myresolver"
+
+      # Service port
+      - "traefik.http.services.sparkco-web.loadbalancer.server.port=3000"
+
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sparkco-backend
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      FRONTEND_URL: https://${BASE_DOMAIN}
+    env_file:
+      - path: ./backend/.env.production
+        required: false
+
+    networks:
+      - traefik
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+
+      # API Router
+      - "traefik.http.routers.sparkco-api.rule=Host(`${BASE_DOMAIN}`) && PathPrefix(`/api`)"
+
+      - "traefik.http.routers.sparkco-api.entrypoints=web,websecure"
+
+      # TLS
+      - "traefik.http.routers.sparkco-api.tls=true"
+      - "traefik.http.routers.sparkco-api.tls.certresolver=myresolver"
+
+      # Priority (API must override frontend)
+      - "traefik.http.routers.sparkco-api.priority=100"
+
+      # Service port
+      - "traefik.http.services.sparkco-api.loadbalancer.server.port=4000"
+
+networks:
+  traefik:
+    external: true

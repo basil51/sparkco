@@ -5,8 +5,11 @@ import {
   ValidationPipe,
   HttpStatus,
   HttpException,
+  NotFoundException,
+  Req,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import type { Request } from 'express';
 import { ContactService } from './contact.service';
 import { ContactDto } from './dto/contact.dto';
 
@@ -24,11 +27,18 @@ export class ContactController {
         message: result.message,
         timestamp: new Date().toISOString(),
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const isProd = process.env.NODE_ENV === 'production';
+      const message =
+        isProd
+          ? 'Failed to submit contact form'
+          : error instanceof Error
+            ? error.message
+            : 'Failed to submit contact form';
       throw new HttpException(
         {
           success: false,
-          message: error.message || 'Failed to submit contact form',
+          message,
           timestamp: new Date().toISOString(),
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -36,8 +46,22 @@ export class ContactController {
     }
   }
 
+  /**
+   * Development: open. Production: disabled unless EMAIL_TEST_SECRET is set and
+   * request includes matching header `x-email-test-secret` (avoids SMTP probe abuse).
+   */
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('test-email')
-  async testEmailConnection() {
+  async testEmailConnection(@Req() req: Request) {
+    if (process.env.NODE_ENV === 'production') {
+      const secret = process.env.EMAIL_TEST_SECRET;
+      const header = req.headers['x-email-test-secret'];
+      const provided = Array.isArray(header) ? header[0] : header;
+      if (!secret || !provided || provided !== secret) {
+        throw new NotFoundException();
+      }
+    }
+
     try {
       const isConnected = await this.contactService.testEmailConnection();
       return {
@@ -48,12 +72,15 @@ export class ContactController {
           : 'Email connection failed',
         timestamp: new Date().toISOString(),
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const isProd = process.env.NODE_ENV === 'production';
       throw new HttpException(
         {
           success: false,
           message: 'Failed to test email connection',
-          error: error.message,
+          ...(!isProd && error instanceof Error
+            ? { error: error.message }
+            : {}),
           timestamp: new Date().toISOString(),
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
