@@ -10,6 +10,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        BACKEND_INTERNAL_URL: http://backend:4000
     container_name: sparkco-frontend
     restart: unless-stopped
 

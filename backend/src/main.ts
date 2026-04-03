@@ -40,7 +40,9 @@ async function bootstrap() {
         callback(null, true);
       } else {
         logger.warn(`Blocked CORS request from origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
+        // Do not throw a server error for disallowed origins.
+        // Returning `false` omits CORS headers and lets the browser block it.
+        callback(null, false);
       }
     },
     credentials: true,

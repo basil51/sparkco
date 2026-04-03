@@ -18,6 +18,10 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 
+# Next.js rewrites() read this at build time — in Docker it must be the backend service URL, not localhost.
+ARG BACKEND_INTERNAL_URL=http://127.0.0.1:4000
+ENV BACKEND_INTERNAL_URL=${BACKEND_INTERNAL_URL}
+
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
 

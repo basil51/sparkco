@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ContactDto } from './dto/contact.dto';
 import { createTransport, Transporter } from 'nodemailer';
-import xss from 'xss';
 import { escape } from 'validator';
+// CJS `module.exports = fn` — default import breaks at runtime; `import xss = require` types as namespace
+const filterXSS = require('xss') as (html: string, options?: Record<string, unknown>) => string;
 
 @Injectable()
 export class ContactService {
@@ -81,7 +82,7 @@ export class ContactService {
   private sanitizeInput(input: string): string {
     if (!input) return '';
     // First escape HTML entities, then use XSS filter
-    return xss(escape(input.trim()));
+    return filterXSS(escape(input.trim()));
   }
 
   /**

@@ -19,6 +19,7 @@ interface FormErrors {
 
 export default function ContactForm() {
   const { trackContactForm } = useAnalytics()
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || ''
   
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -75,7 +76,7 @@ export default function ContactForm() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/contact/submit', {
+      const response = await fetch(`${apiBaseUrl}/api/contact/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,9 +84,22 @@ export default function ContactForm() {
         body: JSON.stringify(formData),
       })
 
-      const result = await response.json()
+      const rawResult: unknown = await response.json().catch(() => null)
+      const result =
+        rawResult && typeof rawResult === 'object'
+          ? (rawResult as { success?: boolean; message?: string | string[] })
+          : null
 
-      if (result.success) {
+      if (!response.ok) {
+        const backendMessage = Array.isArray(result?.message)
+          ? result?.message[0]
+          : result?.message
+        throw new Error(
+          backendMessage || `Request failed with status ${response.status}`
+        )
+      }
+
+      if (result?.success) {
         // Track successful form submission
         trackContactForm()
         
@@ -102,11 +116,18 @@ export default function ContactForm() {
         // Reset success message after 5 seconds
         setTimeout(() => setIsSubmitted(false), 5000)
       } else {
-        throw new Error(result.message || 'Failed to submit form')
+        const backendMessage = Array.isArray(result?.message)
+          ? result?.message[0]
+          : result?.message
+        throw new Error(backendMessage || 'Failed to submit form')
       }
     } catch (error) {
       console.error('Error submitting form:', error)
-      alert('Failed to submit form. Please try again later.')
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Failed to submit form. Please try again later.'
+      alert(message)
     } finally {
       setIsSubmitting(false)
     }
