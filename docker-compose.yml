@@ -1,0 +1,52 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: sparkco-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.sparkco.vip
+      - PORT=3000                                                                                                                                                                                                                                                                                                                                               
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.sparkco-frontend.rule=Host(`sparkco.vip`) || Host(`www.sparkco.vip`)"
+      - "traefik.http.routers.sparkco-frontend.entrypoints=websecure"
+      - "traefik.http.routers.sparkco-frontend.tls=true"
+      - "traefik.http.routers.sparkco-frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.sparkco-frontend.middlewares=security-headers@file"
+      - "traefik.http.services.sparkco-frontend.loadbalancer.server.port=3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: sparkco-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - FRONTEND_URL=https://sparkco.vip
+    env_file:
+      - ./backend/.env
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.sparkco-backend.rule=Host(`api.sparkco.vip`)"
+      - "traefik.http.routers.sparkco-backend.entrypoints=websecure"
+      - "traefik.http.routers.sparkco-backend.tls=true"
+      - "traefik.http.routers.sparkco-backend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.sparkco-backend.middlewares=security-headers@file"
+      - "traefik.http.services.sparkco-backend.loadbalancer.server.port=4000"
+
+networks:
+  web:
+    external: true
