@@ -1,8 +1,8 @@
 # Multi-stage build for production
 FROM node:20-alpine AS base
 
-# Install pnpm
-RUN npm install -g pnpm
+# Pin pnpm to package.json "packageManager" (matches lockfile / CI)
+RUN corepack enable && corepack prepare pnpm@10.12.4 --activate
 
 # Dependencies stage
 FROM base AS deps

@@ -1,8 +1,8 @@
 # Multi-stage build for production
 FROM node:20-alpine AS builder
 
-# Install pnpm
-RUN npm install -g pnpm
+# Pin pnpm to the same major as package.json "packageManager" (reproducible + lockfile-compatible)
+RUN corepack enable && corepack prepare pnpm@10.12.4 --activate
 
 WORKDIR /app
 
